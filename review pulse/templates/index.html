@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReviewPulse AI</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body data-max-reviews="{{ max_reviews }}" data-max-length="{{ max_length }}">
+  <header class="site-header">
+    <div class="container">
+      <h1>ReviewPulse AI</h1>
+      <p class="tagline">Paste customer reviews and get sentiment, themes, reply drafts and next steps in one place.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel" aria-labelledby="input-heading">
+      <h2 id="input-heading">Analyze reviews</h2>
+      <form id="analyze-form" novalidate>
+        <label for="reviews-input">Paste reviews, one per line (up to {{ max_reviews }}, each up to {{ max_length }} characters)</label>
+        <textarea id="reviews-input" name="reviews" rows="7" placeholder="The staff were friendly, but my order arrived cold.&#10;Great prices and quick delivery."></textarea>
+        <p class="hint" id="line-count">0 reviews entered</p>
+
+        <label for="csv-input">Or upload a CSV file with a column named "review" (up to 1 MB)</label>
+        <input type="file" id="csv-input" name="csv_file" accept=".csv">
+
+        <div class="form-actions">
+          <button type="submit" id="analyze-button" class="button primary">Analyze reviews</button>
+          <button type="button" id="clear-button" class="button">Clear</button>
+          <span id="loading" class="loading" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            Analyzing, this can take a few seconds
+          </span>
+        </div>
+        <p id="error-message" class="error" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section id="empty-state" class="panel empty">
+      <h2>No analysis yet</h2>
+      <p>Paste some reviews or upload a CSV file, then select Analyze reviews. Your results will appear here.</p>
+    </section>
+
+    <div id="results" hidden>
+      <section class="panel" aria-labelledby="overview-heading">
+        <div class="panel-head">
+          <h2 id="overview-heading">Overview</h2>
+          <a id="export-link" class="button" href="#">Export CSV</a>
+        </div>
+        <div class="stats" id="stats"></div>
+        <div class="sentiment-bar" id="sentiment-bar" role="img" aria-label="Sentiment distribution"></div>
+        <h3>Summary</h3>
+        <p id="summary-text" class="summary-text"></p>
+        <p class="notice">AI-generated conclusions are estimates. Please review them before acting on them.</p>
+      </section>
+
+      <div class="two-column">
+        <section class="panel" aria-labelledby="themes-heading">
+          <h2 id="themes-heading">Common customer themes</h2>
+          <ul class="plain-list" id="themes-list"></ul>
+        </section>
+        <section class="panel" aria-labelledby="recs-heading">
+          <h2 id="recs-heading">Recommended improvements</h2>
+          <ol class="plain-list" id="recs-list"></ol>
+        </section>
+      </div>
+
+      <section class="panel" aria-labelledby="reviews-heading">
+        <h2 id="reviews-heading">Individual reviews</h2>
+        <div id="review-list"></div>
+      </section>
+    </div>
+
+    <section class="panel" aria-labelledby="history-heading">
+      <h2 id="history-heading">Recent analyses</h2>
+      <p id="history-empty" class="hint" hidden>No saved analyses yet.</p>
+      <ul class="plain-list" id="history-list"></ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">ReviewPulse AI is a learning project. Results come from an AI model and may contain mistakes.</div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
